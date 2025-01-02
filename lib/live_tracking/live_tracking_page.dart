@@ -42,6 +42,18 @@ class _LiveTrackingPageState extends State<LiveTrackingPage> {
                   controller.mapController = mapController;
                   controller.startTracking(order.id);
                 },
+                // heatmaps: {
+                //   Heatmap(
+                //       heatmapId: const HeatmapId("HeatId"),
+                //       data: [
+                //         WeightedLatLng(controller.deliveryboyLocation,
+                //             weight: 1),
+                //       ],
+                //       radius: const HeatmapRadius.fromPixels(60)),
+                // },
+                buildingsEnabled: true,
+                trafficEnabled: true,
+
                 markers: {
                   Marker(
                     markerId: const MarkerId('destination'),

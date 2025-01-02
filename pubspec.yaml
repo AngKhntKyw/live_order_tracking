@@ -30,6 +30,10 @@ dependencies:
   location: ^7.0.1
   geolocator: ^13.0.2
   flutter_polyline_points: ^2.1.0
+  place_picker_google: ^0.0.14
+  google_place_plus: ^1.0.0
+  permission_handler: ^11.3.1
+  compassx: ^1.0.1
 
 
 dev_dependencies:
