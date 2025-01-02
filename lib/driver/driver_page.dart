@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_order_tracking/driver/driver_controller.dart';
+import 'package:live_order_tracking/go_to_pick_up/go_to_pick_up_page.dart';
 
 class DriverPage extends StatefulWidget {
   const DriverPage({super.key});
@@ -88,8 +89,10 @@ class _DriverPageState extends State<DriverPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                          "Total Bookings : ${driverController.clients.length}"),
+                                      ListTile(
+                                        title: Text(
+                                            "Total Bookings : ${driverController.clients.length}"),
+                                      ),
                                       ListView.builder(
                                         shrinkWrap: true,
                                         itemCount:
@@ -100,12 +103,34 @@ class _DriverPageState extends State<DriverPage> {
                                           final booking = driverController
                                               .clients
                                               .elementAt(index);
-                                          return ListTile(
-                                            title: Text(booking.pickUp.name),
-                                            subtitle:
-                                                Text(booking.destination.name),
-                                            trailing:
-                                                Text("${booking.fare} Kyats"),
+                                          return Column(
+                                            children: [
+                                              ListTile(
+                                                title: Column(
+                                                  children: [
+                                                    Text(booking.pickUp.name),
+                                                    Text(booking
+                                                        .destination.name),
+                                                  ],
+                                                ),
+                                                trailing: Text(
+                                                    "${booking.fare} Kyats"),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  fixedSize: Size.fromWidth(
+                                                      MediaQuery.sizeOf(context)
+                                                          .width),
+                                                ),
+                                                onPressed: () {
+                                                  Get.to(() => GoToPickUpPage(
+                                                      booking: booking));
+                                                },
+                                                child: const Text(
+                                                    "Accept booking"),
+                                              ),
+                                              const Divider(),
+                                            ],
                                           );
                                         },
                                       ),
