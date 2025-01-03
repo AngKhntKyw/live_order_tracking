@@ -64,7 +64,8 @@ class _GoToPickUpPageState extends State<GoToPickUpPage> {
                       rotation: goToPickUpController.markerRotation,
                       anchor: const Offset(0.5, 0.5),
                     ),
-                    if (goToPickUpController.pickUpMarker != null)
+                    if (goToPickUpController.pickUpMarker != null &&
+                        !goToPickUpController.goingToDestination)
                       goToPickUpController.pickUpMarker!,
                     if (goToPickUpController.destinationMarker != null)
                       goToPickUpController.destinationMarker!,
@@ -130,9 +131,11 @@ class _GoToPickUpPageState extends State<GoToPickUpPage> {
                           )
                         : goToPickUpController.goToDestination();
                   },
-                  child: Text(goToPickUpController.goingToDestination
-                      ? "Drop Off"
-                      : "Let's Go"),
+                  child: Text(
+                    goToPickUpController.goingToDestination
+                        ? "Drop Off"
+                        : "Let's Go",
+                  ),
                 ),
               ],
             ),

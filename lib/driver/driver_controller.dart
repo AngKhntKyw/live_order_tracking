@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compassx/compassx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_order_tracking/model/booking.dart';
+import 'package:live_order_tracking/model/driver.dart';
 import 'package:location/location.dart';
 
 class DriverController extends GetxController {
@@ -20,6 +22,9 @@ class DriverController extends GetxController {
   Set<Booking> clients = {};
   Set<Marker> markers = {};
   Set<Circle> circles = {};
+  List<LatLng> polylineCoordinates = [];
+  Booking? booking;
+  String state = '';
 
   //
 
@@ -48,7 +53,11 @@ class DriverController extends GetxController {
             CameraPosition(
                 target: LatLng(event.latitude!, event.longitude!), zoom: 15)));
         update();
-        // saveOrUpdateDriverLocation(event.latitude!, event.longitude!);
+        saveOrUpdateDriverLocation(event.latitude!, event.longitude!);
+        booking != null
+            ? getDestinationPolyPoints(
+                event.latitude!, event.longitude!, booking!)
+            : null;
         List<Booking> bookings = await getBookings();
         for (Booking booking in bookings) {
           markers.add(Marker(
@@ -107,7 +116,7 @@ class DriverController extends GetxController {
         markerRotation += 360;
       }
       update();
-      // updateDriverRotation();
+      updateDriverRotation();
     });
   }
 
@@ -119,7 +128,7 @@ class DriverController extends GetxController {
       markerRotation += 360;
     }
     update();
-    // updateDriverRotation();
+    updateDriverRotation();
   }
 
   Future<void> saveOrUpdateDriverLocation(
@@ -207,5 +216,42 @@ class DriverController extends GetxController {
       return Booking.fromJson(doc.data() as Map<String, dynamic>);
     }).toList();
     return bookings;
+  }
+
+  void acceptBooking(Booking bk) async {
+    booking = bk;
+    state = 'goingToPickUp';
+    await bookingCollection.doc("CHatPH4zfUVrAedu9bH3").update({
+      'driver': Driver(
+        driverId: 'D001',
+        latitude: currentLocationData!.latitude!,
+        longitude: currentLocationData!.longitude!,
+        rotation: markerRotation,
+      ).toJson(),
+      'state': 'goingToPickUp'
+    });
+  }
+
+  Future<void> getDestinationPolyPoints(
+      double latitude, double longitude, Booking booking) async {
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleApiKey: "AIzaSyBtzaTGeBrb0mTh911fAeuv2ZB0eJk8J-M",
+      request: PolylineRequest(
+        origin: PointLatLng(latitude, longitude),
+        destination:
+            PointLatLng(booking.pickUp.latitude, booking.pickUp.longitude),
+        mode: TravelMode.driving,
+      ),
+    );
+    if (result.points.isNotEmpty) {
+      polylineCoordinates.clear();
+
+      for (var point in result.points) {
+        polylineCoordinates.add(
+          LatLng(point.latitude, point.longitude),
+        );
+      }
+    }
   }
 }

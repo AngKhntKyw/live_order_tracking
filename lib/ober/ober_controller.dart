@@ -22,7 +22,8 @@ class OberController extends GetxController {
   //
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   late CollectionReference bookingCollection;
-  bool isBooking = false;
+  late CollectionReference driverCollection;
+  bool driverFound = false;
 
   @override
   void onInit() {
@@ -32,7 +33,6 @@ class OberController extends GetxController {
 
   @override
   void dispose() {
-    isBooking = false;
     super.dispose();
   }
 
@@ -80,12 +80,16 @@ class OberController extends GetxController {
 
   void bookTaxi(BuildContext context) async {
     try {
-      Booking booking =
-          Booking(pickUp: pickUp!, destination: destination!, fare: fare!);
+      Booking booking = Booking(
+        bookingId: 'B001',
+        pickUp: pickUp!,
+        destination: destination!,
+        fare: fare!,
+        state: 'booking',
+      );
       final bookingJson = booking.toJson();
       bookingCollection = firestore.collection('booking');
       await bookingCollection.add(bookingJson);
-      isBooking = true;
     } catch (e) {
       rethrow;
     }

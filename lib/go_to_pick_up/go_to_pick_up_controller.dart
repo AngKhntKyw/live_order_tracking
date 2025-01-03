@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compassx/compassx.dart';
 import 'package:flutter/material.dart';
@@ -41,14 +43,15 @@ class GoToPickUpController extends GetxController {
     location.onLocationChanged.listen(
       (event) async {
         currentLocationData = event;
-        mapController?.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(
-                target: LatLng(event.latitude!, event.longitude!), zoom: 15)));
+        // mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //         target: LatLng(event.latitude!, event.longitude!), zoom: 15)));
         goingToDestination
             ? getDestinationPolyPoints(event.latitude!, event.longitude!)
             : getPickUpPolyPoints(event.latitude!, event.longitude!);
+
         update();
-        // saveOrUpdateDriverLocation(event.latitude!, event.longitude!);
+        saveOrUpdateDriverLocation(event.latitude!, event.longitude!);
       },
     );
   }
@@ -58,6 +61,12 @@ class GoToPickUpController extends GetxController {
     pickUpMarker = Marker(
       markerId: const MarkerId('pick up'),
       position: LatLng(booking!.pickUp.latitude, booking!.pickUp.longitude),
+      icon: BitmapDescriptor.defaultMarker,
+    );
+    destinationMarker = Marker(
+      markerId: const MarkerId('destination'),
+      position:
+          LatLng(booking!.destination.latitude, booking!.destination.longitude),
       icon: BitmapDescriptor.defaultMarker,
     );
   }
@@ -129,7 +138,7 @@ class GoToPickUpController extends GetxController {
         markerRotation += 360;
       }
       update();
-      // updateDriverRotation();
+      updateDriverRotation();
     });
   }
 
@@ -141,7 +150,7 @@ class GoToPickUpController extends GetxController {
       markerRotation += 360;
     }
     update();
-    // updateDriverRotation();
+    updateDriverRotation();
   }
 
   Future<void> saveOrUpdateDriverLocation(
@@ -212,13 +221,5 @@ class GoToPickUpController extends GetxController {
 
   void goToDestination() {
     goingToDestination = true;
-    pickUpMarker = null;
-    destinationMarker = Marker(
-      markerId: const MarkerId('destination'),
-      position:
-          LatLng(booking!.destination.latitude, booking!.destination.longitude),
-      icon: BitmapDescriptor.defaultMarker,
-    );
-    update();
   }
 }

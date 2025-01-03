@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -83,31 +85,31 @@ class _ConfirmPageState extends State<ConfirmPage> {
               ],
             ),
             height: size.height / 2.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Pick Up :"),
-                Text(oberController.pickUp!.name),
-                SizedBox(height: size.height / 25),
-                const Text("Destination :"),
-                Text(oberController.destination!.name),
-                SizedBox(height: size.height / 25),
-                const Text("Fare: "),
-                Text("${oberController.fare} MMKS"),
-                SizedBox(height: size.height / 25),
-                oberController.isBooking
-                    ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize:
-                              Size.fromWidth(MediaQuery.sizeOf(context).width),
-                        ),
-                        onPressed: () {
-                          oberController.bookTaxi(context);
-                        },
-                        child: const Text("Book Taxi"),
-                      ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Pick Up :"),
+                  Text(oberController.pickUp!.name),
+                  SizedBox(height: size.height / 25),
+                  const Text("Destination :"),
+                  Text(oberController.destination!.name),
+                  SizedBox(height: size.height / 25),
+                  const Text("Fare: "),
+                  Text("${oberController.fare} MMKS"),
+                  SizedBox(height: size.height / 25),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize:
+                          Size.fromWidth(MediaQuery.sizeOf(context).width),
+                    ),
+                    onPressed: () {
+                      oberController.bookTaxi(context);
+                    },
+                    child: const Text("Book Taxi"),
+                  ),
+                ],
+              ),
             ),
           ),
         );
